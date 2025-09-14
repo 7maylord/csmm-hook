@@ -6,6 +6,7 @@ import {IHooks} from "v4-core/interfaces/IHooks.sol";
 import {Hooks} from "v4-core/libraries/Hooks.sol";
 import {TickMath} from "v4-core/libraries/TickMath.sol";
 import {IPoolManager} from "v4-core/interfaces/IPoolManager.sol";
+import {ModifyLiquidityParams, SwapParams} from "v4-core/types/PoolOperation.sol";
 import {PoolKey} from "v4-core/types/PoolKey.sol";
 import {BalanceDelta} from "v4-core/types/BalanceDelta.sol";
 import {PoolId, PoolIdLibrary} from "v4-core/types/PoolId.sol";
@@ -40,8 +41,7 @@ contract CSMMTest is Test, Deployers {
             currency1,
             hook,
             3000,
-            SQRT_PRICE_1_1,
-            ZERO_BYTES
+            SQRT_PRICE_1_1
         );
  
         // Add some initial liquidity through the custom `addLiquidity` function
@@ -61,7 +61,7 @@ contract CSMMTest is Test, Deployers {
     vm.expectRevert();
     modifyLiquidityRouter.modifyLiquidity(
         key,
-        IPoolManager.ModifyLiquidityParams({
+        ModifyLiquidityParams({
             tickLower: -60,
             tickUpper: 60,
             liquidityDelta: 1e18,
@@ -102,7 +102,7 @@ function test_swap_exactInput_zeroForOne() public {
     uint balanceOfTokenBBefore = key.currency1.balanceOfSelf();
     swapRouter.swap(
         key,
-        IPoolManager.SwapParams({
+        SwapParams({
             zeroForOne: true,
             amountSpecified: -100e18,
             sqrtPriceLimitX96: TickMath.MIN_SQRT_PRICE + 1
@@ -128,7 +128,7 @@ function test_swap_exactOutput_zeroForOne() public {
     uint balanceOfTokenBBefore = key.currency1.balanceOfSelf();
     swapRouter.swap(
         key,
-        IPoolManager.SwapParams({
+        SwapParams({
             zeroForOne: true,
             amountSpecified: 100e18,
             sqrtPriceLimitX96: TickMath.MIN_SQRT_PRICE + 1
